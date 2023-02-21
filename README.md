@@ -1,1 +1,1 @@
-# csh-discord-bot
+# Discord Bot
