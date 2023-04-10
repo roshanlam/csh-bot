@@ -1,3 +1,2 @@
 discord
 pymongo
-discord-py-slash-command
