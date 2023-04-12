@@ -44,5 +44,7 @@ async def on_message(message):
             "urls": urls
         }
         collection.insert_one(data)
+        
+    # if message content starts with $query then search for the query 
 
 client.run(filedata['token'])
