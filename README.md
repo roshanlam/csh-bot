@@ -7,6 +7,7 @@ The purpose of this bot is to help make the discord server more lit and make us 
 
 
 ## ToDos
+- [x] Let discord members calculate their class grades in the server
 - [ ] Let discord members search for exactly what they are looking for
 - [ ] Setup jenkins on raspberry pi so the code on raspberry pi can be updated every time there are new code being pushed into the main branch.
 - [ ] Setup MongoDB on raspberry pi
