@@ -29,6 +29,20 @@ resources_and__help_channels = [
     1094788875370639510
 ]
 
+def calcGrade(grades: dict):
+    with open('gradeCalc.json') as f:
+        data = json.load(f)
+    grade = 0
+    for key in data:
+        if key == grades['class']:
+            data = data[key]
+            break
+    for key in grades:
+        if key == 'class':
+            continue
+        grade += grades[key] * (data[key]/100)
+    return grade
+
 @client.event
 async def on_message(message):
     if message.author == client.user:
@@ -44,7 +58,14 @@ async def on_message(message):
             "urls": urls
         }
         collection.insert_one(data)
-        
-    # if message content starts with $query then search for the query 
 
+    if message.content.startswith('$calcGrade'):
+        # user input will be $calcGrade {"class": "cs220", "hw": 100, "midterm": 100, "final": 100 ...}
+        with open('gradeCalc.json') as f:
+            data = json.load(f)
+        user_input = message.content[11:]
+        user_input = json.loads(user_input)
+        await message.channel.send(calcGrade(user_input))
+
+    # if message content starts with $query then search for the query 
 client.run(filedata['token'])

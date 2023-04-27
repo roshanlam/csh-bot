@@ -1,0 +1,20 @@
+{
+    "cs220":{
+        "hw": 40,
+        "lab": 8,
+        "quiz": 10,
+        "lecture": 2,
+        "midterm1": 12,
+        "midterm2": 12,
+        "final": 16
+    },
+    "cs311Marius": {
+        "hw": 40,
+        "lab": 8,
+        "quiz": 10,
+        "lecture": 2,
+        "midterm1": 12,
+        "midterm2": 12,
+        "final": 16
+    }
+}
