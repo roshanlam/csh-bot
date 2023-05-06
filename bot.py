@@ -83,8 +83,6 @@ async def on_message(message):
         await message.channel.send(joke)
         
     if message.content == '!help':
-        #help_content = "!grades - calculates your grade\n!joke - tells you a joke\n!help - shows this message"
-        #await message.channel.send(help_content)
         commands = []
         with open('commands.json') as f:
             commands = json.load(f)
