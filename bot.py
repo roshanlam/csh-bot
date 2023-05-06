@@ -81,7 +81,18 @@ async def on_message(message):
     if message.content == '!joke':
         joke = getJoke()
         await message.channel.send(joke)
-    
+        
+    if message.content == '!help':
+        #help_content = "!grades - calculates your grade\n!joke - tells you a joke\n!help - shows this message"
+        #await message.channel.send(help_content)
+        commands = []
+        with open('commands.json') as f:
+            commands = json.load(f)
+        help_content = commands['commands']
+        embed = discord.Embed(title="Help", description="Here are the commands", color=0x59b3d8)
+        for key in help_content:
+            embed.add_field(name=key, value=help_content[key], inline=False)
+        await message.channel.send(embed=embed)
     
 
 client.run(filedata['token'])

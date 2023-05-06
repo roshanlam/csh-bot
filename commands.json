@@ -1,0 +1,7 @@
+{
+    "commands": {
+        "!grades": "calculates your grade",
+        "!help": "shows this message",
+        "!joke": "tells a joke"
+    }
+}
