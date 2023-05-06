@@ -47,12 +47,19 @@ def calcGrade(grades: dict):
     return grade
 
 
-def getJoke():
-    content = requests.get('https://v2.jokeapi.dev/joke/Any?', headers={'Accept': 'application/json'}).json()
-    if content['type'] == 'single':
-        return content['joke']
-    elif content['type'] == 'twopart':
-        return content['setup'] + '\n' + content['delivery']
+def getJoke(query=None):
+    if query is None:
+        content = requests.get('https://v2.jokeapi.dev/joke/Any?', headers={'Accept': 'application/json'}).json()
+        if content['type'] == 'single':
+            return content['joke']
+        elif content['type'] == 'twopart':
+            return content['setup'] + '\n' + content['delivery']
+    else:
+        content = requests.get('https://v2.jokeapi.dev/joke/Any?contains={}'.format(query), headers={'Accept': 'application/json'}).json()
+        if content['type'] == 'single':
+            return content['joke']
+        elif content['type'] == 'twopart':
+            return content['setup'] + '\n' + content['delivery']
 
 @client.event
 async def on_message(message):
@@ -78,13 +85,19 @@ async def on_message(message):
         else:
             await message.channel.send('No grades found')
     
-    if message.content == '!joke':
+    if message.content.startswith('!joke'):
         channelId = "1104254807428046939"
         if message.channel.id == int(channelId):
-            joke = getJoke()
+            query = None
+            args = message.content.split()[1:]
+            if args:
+                query = ",".join(args)
+            joke = getJoke(query)
             await message.channel.send(joke)
         else:
             await message.channel.send('You can only use this command in <#{}>'.format(channelId))
+
+
         
     if message.content == '!help':
         commands = []
