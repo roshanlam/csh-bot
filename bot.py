@@ -1,8 +1,14 @@
+import asyncio
+import traceback
 import discord
 from discord.ext import commands
+from discord.ext.commands import Bot, Context
+from discord import app_commands
 import json
 from pymongo import MongoClient
 import re
+import requests
+from modal import Modal
 
 client = discord.Client(intents=discord.Intents.all())
 filedata = {}
@@ -13,11 +19,8 @@ with open('config.json') as f:
 dbclient = MongoClient(filedata['mongoURI'])
 db = dbclient.test
 collection = db.resources
+bot = Bot(command_prefix='!', intents=discord.Intents.all())
 
-#bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
-#@bot.command()
-#async def search(ctx, query):
-#    await ctx.send('Query {}'.format(query))
 
 @client.event
 async def on_ready():
@@ -40,8 +43,16 @@ def calcGrade(grades: dict):
     for key in grades:
         if key == 'class':
             continue
-        grade += grades[key] * (data[key]/100)
+        grade += float(grades[key]) * (data[key]/100)
     return grade
+
+
+def getJoke():
+    content = requests.get('https://v2.jokeapi.dev/joke/Any?', headers={'Accept': 'application/json'}).json()
+    if content['type'] == 'single':
+        return content['joke']
+    elif content['type'] == 'twopart':
+        return content['setup'] + '\n' + content['delivery']
 
 @client.event
 async def on_message(message):
@@ -59,13 +70,18 @@ async def on_message(message):
         }
         collection.insert_one(data)
 
-    if message.content.startswith('$calcGrade'):
-        # user input will be $calcGrade {"class": "cs220", "hw": 100, "midterm": 100, "final": 100 ...}
-        with open('gradeCalc.json') as f:
-            data = json.load(f)
-        user_input = message.content[11:]
-        user_input = json.loads(user_input)
-        await message.channel.send(calcGrade(user_input))
+    if message.content == '!grades':
+        grades = collection.find_one({"user": message.author.id})
+        if grades:
+            grade = calcGrade(grades)
+            await message.channel.send(f'Your grade is {grade}')
+        else:
+            await message.channel.send('No grades found')
+    
+    if message.content == '!joke':
+        joke = getJoke()
+        await message.channel.send(joke)
+    
+    
 
-    # if message content starts with $query then search for the query 
 client.run(filedata['token'])
