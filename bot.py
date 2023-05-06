@@ -79,8 +79,12 @@ async def on_message(message):
             await message.channel.send('No grades found')
     
     if message.content == '!joke':
-        joke = getJoke()
-        await message.channel.send(joke)
+        channelId = "1104254807428046939"
+        if message.channel.id == int(channelId):
+            joke = getJoke()
+            await message.channel.send(joke)
+        else:
+            await message.channel.send('You can only use this command in <#{}>'.format(channelId))
         
     if message.content == '!help':
         commands = []
