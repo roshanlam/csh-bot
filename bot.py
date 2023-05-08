@@ -1,9 +1,5 @@
-import asyncio
-import traceback
 import discord
-from discord.ext import commands
 from discord.ext.commands import Bot, Context
-from discord import app_commands
 import json
 from pymongo import MongoClient
 import re
@@ -60,6 +56,11 @@ def getJoke(query=None):
             return content['joke']
         elif content['type'] == 'twopart':
             return content['setup'] + '\n' + content['delivery']
+        
+def getMeme():
+    meme = requests.get('https://meme-api.com/gimme/memes/1').json()
+    meme = meme['memes'][0]['url']
+    return meme
 
 @client.event
 async def on_message(message):
@@ -96,9 +97,15 @@ async def on_message(message):
             await message.channel.send(joke)
         else:
             await message.channel.send('You can only use this command in <#{}>'.format(channelId))
-
-
         
+    if message.content.startswith('!meme'):
+        channelIdMeme = "1076335073487507517"
+        if message.channel.id == int(channelIdMeme):
+            meme = getMeme()
+            await message.channel.send(meme)
+        else:
+            await message.channel.send('You can only use this command in <#{}>'.format(channelIdMeme))
+
     if message.content == '!help':
         commands = []
         with open('commands.json') as f:
