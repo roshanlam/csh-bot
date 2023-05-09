@@ -1,0 +1,39 @@
+{
+    "commands": {
+        "!grades": "calculates your grade",
+        "!help": "shows this message",
+        "!joke": "tells a joke",
+        "!meme": "sends a meme"
+    },
+    "channels": {
+        "general": 1105188880375881849,
+        "jokes": 1104254807428046939,
+        "memes": 1076335073487507517,
+        "resources_and_help": [
+            1078868466838282320, 1078868442226106378, 1081337945975431309, 1088248576540418158,
+            1078441318210080892, 1078441608653066330, 1093875172483805256, 1088248543271211069,
+            1094788875370639510
+        ],
+        "schedules": 1105503269293408340
+    },
+    "gradeCalc": {
+        "cs220":{
+            "hw": 40,
+            "lab": 8,
+            "quiz": 10,
+            "lecture": 2,
+            "midterm1": 12,
+            "midterm2": 12,
+            "final": 16
+        },
+        "cs311Marius": {
+            "hw": 40,
+            "lab": 8,
+            "quiz": 10,
+            "lecture": 2,
+            "midterm1": 12,
+            "midterm2": 12,
+            "final": 16
+        }
+    }
+}

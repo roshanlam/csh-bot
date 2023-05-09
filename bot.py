@@ -4,13 +4,11 @@ import json
 from pymongo import MongoClient
 import re
 import requests
-from modal import Modal
+from lib import openJSON, calcGrade, fetchJSON, handleJokes
 
 client = discord.Client(intents=discord.Intents.all())
-filedata = {}
-
-with open('config.json') as f:
-    filedata = json.load(f)
+filedata: dict = {}
+filedata = openJSON('config.json')
 
 dbclient = MongoClient(filedata['mongoURI'])
 db = dbclient.test
@@ -28,37 +26,16 @@ resources_and__help_channels = [
     1094788875370639510
 ]
 
-def calcGrade(grades: dict):
-    with open('gradeCalc.json') as f:
-        data = json.load(f)
-    grade = 0
-    for key in data:
-        if key == grades['class']:
-            data = data[key]
-            break
-    for key in grades:
-        if key == 'class':
-            continue
-        grade += float(grades[key]) * (data[key]/100)
-    return grade
-
-
 def getJoke(query=None):
     if query is None:
-        content = requests.get('https://v2.jokeapi.dev/joke/Any?', headers={'Accept': 'application/json'}).json()
-        if content['type'] == 'single':
-            return content['joke']
-        elif content['type'] == 'twopart':
-            return content['setup'] + '\n' + content['delivery']
+        content = fetchJSON('https://v2.jokeapi.dev/joke/Any?', headers={'Accept': 'application/json'})
+        return handleJokes(content)
     else:
-        content = requests.get('https://v2.jokeapi.dev/joke/Any?contains={}'.format(query), headers={'Accept': 'application/json'}).json()
-        if content['type'] == 'single':
-            return content['joke']
-        elif content['type'] == 'twopart':
-            return content['setup'] + '\n' + content['delivery']
-        
+        content = fetchJSON('https://v2.jokeapi.dev/joke/Any?contains={}'.format(query), headers={'Accept': 'application/json'})
+        return handleJokes(content)
+    
 def getMeme():
-    meme = requests.get('https://meme-api.com/gimme/memes/1').json()
+    meme = fetchJSON('https://meme-api.com/gimme/memes/1')
     meme = meme['memes'][0]['url']
     return meme
 
@@ -108,7 +85,7 @@ async def on_message(message):
 
     if message.content == '!help':
         commands = []
-        with open('commands.json') as f:
+        with open('data.json') as f:
             commands = json.load(f)
         help_content = commands['commands']
         embed = discord.Embed(title="Help", description="Here are the commands", color=0x59b3d8)
